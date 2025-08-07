@@ -22,17 +22,15 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run Checkstyle
-        run: ./gradlew checkstyleMain
-
-      - name: Run reviewdog
-        uses: reviewdog/action-checkstyle@v1
+        uses: dbelyaev/action-checkstyle@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review # Post comments as a single review
           checkstyle_config: 'config/checkstyle/checkstyle.xml'
-          # Gradle generates the report in build/reports/checkstyle/main.xml
-          path: 'build/reports/checkstyle/*.xml'
+          checkstyle_version: '10.17.0'
+          reporter: 'github-pr-review'
           level: 'warning'
+          workdir: '.'
+          pattern: 'build/reports/checkstyle/*.xml'
 
   pmd:
     name: PMD Code Analysis
