@@ -6,7 +6,7 @@ on:
 
 jobs:
   checkstyle:
-    name: Checkstyle with Reviewdog
+    name: Run Checkstyle
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
