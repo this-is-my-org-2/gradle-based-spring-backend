@@ -37,3 +37,9 @@ checkstyle {
     toolVersion = "10.17.0"
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
+
+spotbugs {
+    reports {
+        html.required = true
+    }
+}

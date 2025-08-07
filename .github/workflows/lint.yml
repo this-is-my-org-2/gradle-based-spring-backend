@@ -3,6 +3,8 @@ name: Java Code Linters
 on:
   pull_request:
     branches: [ "main" ]
+  push:
+    branches: [ "main" ]
 
 jobs:
   checkstyle:
@@ -66,8 +68,9 @@ jobs:
       - name: Run SpotBugs
         run: ./gradlew spotbugsMain
 
-      - name: Upload SpotBugs report
-        uses: jmservera/spotbugs-github-action@v0.2.0-alpha
+      - name: Deploy SpotBugs Report to GitHub Pages
+        if: github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          report_path: 'build/reports/spotbugs/main.xml'
+          publish_dir: ./build/reports/spotbugs/main.html
