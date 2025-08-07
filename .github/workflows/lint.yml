@@ -67,8 +67,7 @@ jobs:
         run: ./gradlew spotbugsMain
 
       - name: Upload SpotBugs report
-        uses: nick-invision/spotbugs-action@v2
+        uses: spotbugs/spotbugs-github-action@v5
         with:
-          # SpotBugs XML report path
-          report-path: 'build/reports/spotbugs/main.xml'
-          # The action will upload the report to GitHub Code Scanning
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          report_path: 'build/reports/spotbugs/main.xml'
