@@ -1,0 +1,12 @@
+version: 2
+updates:
+  # Enable version updates for Gradle
+  - package-ecosystem: "gradle"
+    # Look for `build.gradle` files in the root directory
+    directory: "/"
+    schedule:
+      interval: "daily"
+    # Add labels to PRs
+    labels:
+      - "dependencies"
+      - "java"

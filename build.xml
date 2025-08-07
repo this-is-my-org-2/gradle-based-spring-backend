@@ -1,0 +1,65 @@
+<project name="SpringBackendWithAnt" default="test" basedir=".">
+
+    <!-- ===================================================================== -->
+    <!-- Properties                                                            -->
+    <!-- ===================================================================== -->
+    <property name="src.dir" location="src/main/java"/>
+    <property name="test.src.dir" location="src/test/java"/>
+    <property name="build.dir" location="build/ant"/>
+    <property name="build.classes.dir" location="${build.dir}/classes"/>
+    <property name="build.test.classes.dir" location="${build.dir}/test-classes"/>
+    <property name="reports.dir" location="${build.dir}/reports"/>
+    <property name="reports.junit.dir" location="${reports.dir}/junit"/>
+
+    <!-- Define the location of the Gradle cache. This might need adjustment. -->
+    <property name="gradle.cache.dir" location="${user.home}/.gradle/caches/modules-2/files-2.1"/>
+
+    <!-- ===================================================================== -->
+    <!-- Classpath                                                             -->
+    <!-- ===================================================================== -->
+    <path id="compile.classpath">
+        <fileset dir="${gradle.cache.dir}" includes="**/*.jar"/>
+    </path>
+
+    <path id="test.classpath">
+        <path refid="compile.classpath"/>
+        <pathelement location="${build.classes.dir}"/>
+    </path>
+
+    <!-- ===================================================================== -->
+    <!-- Targets                                                               -->
+    <!-- ===================================================================== -->
+    <target name="init" description="Create build directories">
+        <mkdir dir="${build.classes.dir}"/>
+        <mkdir dir="${build.test.classes.dir}"/>
+        <mkdir dir="${reports.junit.dir}"/>
+    </g>
+    <target name="clean" description="Clean up build artifacts">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="compile" depends="init" description="Compile main source code">
+        <javac srcdir="${src.dir}" destdir="${build.classes.dir}" includeantruntime="false" classpathref="compile.classpath" debug="on"/>
+    </target>
+
+    <target name="compile-tests" depends="compile" description="Compile test source code">
+        <javac srcdir="${test.src.dir}" destdir="${build.test.classes.dir}" includeantruntime="false" classpathref="test.classpath" debug="on"/>
+    </target>
+
+    <target name="test" depends="compile-tests" description="Run JUnit 5 tests">
+        <junitlauncher>
+            <classpath refid="test.classpath"/>
+            <classpath>
+                <pathelement location="${build.test.classes.dir}"/>
+            </classpath>
+            <testclasses outputdir="${reports.junit.dir}">
+                <fileset dir="${build.test.classes.dir}">
+                    <include name="**/*Tests.class"/>
+                </fileset>
+                <listener type="legacy-plain" sendSysOut="true"/>
+                <listener type="legacy-xml" sendSysOut="true" sendSysErr="true"/>
+            </testclasses>
+        </junitlauncher>
+    </target>
+
+</project>

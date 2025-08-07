@@ -1,0 +1,45 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x ./gradlew
+
+    - name: Run Checkstyle and Generate Javadocs
+      run: ./gradlew check javadoc
+      # The 'check' task runs tests and then checkstyle.
+      # It will fail if there are any linting errors.
+      # The 'javadoc' task generates Javadocs. It will fail if there are Javadoc errors.
+
+  deploy-javadoc:
+    needs: build
+    runs-on: ubuntu-latest
+    # Deploy only when pushing to the main branch
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Deploy Javadoc to GitHub Pages
+        uses: mathieudutour/deploy-javadoc-to-github-pages@v4.2.1
+        with:
+          # The directory where Gradle generates Javadocs
+          directory: 'build/docs/javadoc'
+          # The GitHub token is automatically provided by Actions
+          github_token: ${{ secrets.GITHUB_TOKEN }}

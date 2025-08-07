@@ -1,0 +1,76 @@
+name: Java Code Linters
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  checkstyle:
+    name: Checkstyle with Reviewdog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Run Checkstyle
+        run: ./gradlew checkstyleMain
+
+      - name: Run reviewdog
+        uses: reviewdog/action-checkstyle@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review # Post comments as a single review
+          checkstyle_config: 'config/checkstyle/checkstyle.xml'
+          # Gradle generates the report in build/reports/checkstyle/main.xml
+          path: 'build/reports/checkstyle/*.xml'
+          level: 'warning'
+
+  pmd:
+    name: PMD Code Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run PMD
+        uses: pmd/pmd-github-action@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # The ruleset file can be customized in the repository
+          rulesets: 'rulesets/java/quickstart.xml'
+          # The action will automatically upload results to GitHub Code Scanning
+
+  spotbugs:
+    name: SpotBugs Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Run SpotBugs
+        run: ./gradlew spotbugsMain
+
+      - name: Upload SpotBugs report
+        uses: nick-invision/spotbugs-action@v2
+        with:
+          # SpotBugs XML report path
+          report-path: 'build/reports/spotbugs/main.xml'
+          # The action will upload the report to GitHub Code Scanning

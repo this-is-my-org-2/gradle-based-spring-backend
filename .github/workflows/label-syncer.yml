@@ -1,0 +1,19 @@
+name: Label Syncer
+
+on:
+  # Run manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  sync-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Sync labels
+        uses: micnncim/action-label-syncer@v1
+        with:
+          manifest: .github/labels.yml
+          # Set prune to true to delete labels that are not in the manifest
+          prune: true

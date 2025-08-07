@@ -1,0 +1,6 @@
+- name: dependencies
+  color: "0366d6"
+  description: "Pull requests that update a dependency"
+- name: java
+  color: "b07219"
+  description: "Java or JVM related pull requests"
