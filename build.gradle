@@ -32,3 +32,8 @@ tasks.named('test') {
 tasks.named('check') {
 	dependsOn tasks.named('test')
 }
+
+checkstyle {
+    toolVersion = "10.17.0"
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+}
