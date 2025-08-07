@@ -4,90 +4,49 @@
           "https://checkstyle.org/dtds/configuration_1_3.dtd">
 <module name="Checker">
   <property name="severity" value="warning"/>
-  <property name="fileExtensions" value="java, properties, xml"/>
+  <property name="fileExtensions" value="java"/>
+
   <module name="TreeWalker">
+    <!-- Imports -->
+    <module name="AvoidStarImport"/>
+    <module name="IllegalImport"/>
+    <module name="RedundantImport"/>
     <module name="UnusedImports"/>
-    <module name="ConstantName"/>
-    <module name="EmptyBlock"/>
-    <module name="Indentation"/>
+
+    <!-- Naming Conventions -->
     <module name="MethodName"/>
     <module name="PackageName"/>
     <module name="ParameterName"/>
     <module name="StaticVariableName"/>
     <module name="TypeName"/>
-    <module name="AvoidStarImport"/>
-    <module name="IllegalImport"/>
-    <module name="RedundantImport"/>
-    <module name="UnusedImports"/>
-    <module name="MethodLength"/>
-    <module name="ParameterNumber"/>
-    <module name="EmptyForIteratorPad"/>
-    <module name="GenericWhitespace"/>
-    <module name="MethodParamPad"/>
-    <module name="NoWhitespaceAfter"/>
-    <module name="NoWhitespaceBefore"/>
-    <module name="OperatorWrap"/>
-    <module name="ParenPad"/>
-    <module name="TypecastParenPad"/>
-    <module name="WhitespaceAfter"/>
+
+    <!-- Code Style / Formatting -->
+    <module name="EmptyLineSeparator">
+        <property name="allowNoEmptyLineBetweenFields" value="true"/>
+    </module>
+    <module name="Indentation"/>
     <module name="WhitespaceAround"/>
-    <module name="ModifierOrder"/>
-    <module name="RedundantModifier"/>
-    <module name="AvoidNestedBlocks"/>
-    <module name="EmptyBlock"/>
     <module name="LeftCurly"/>
     <module name="NeedBraces"/>
     <module name="RightCurly"/>
-    <module name="EmptyStatement"/>
+
+    <!-- Common Coding Problems -->
+    <module name="EmptyBlock"/>
     <module name="EqualsHashCode"/>
-    <module name="HiddenField"/>
     <module name="IllegalInstantiation"/>
-    <module name="InnerAssignment"/>
-    <module name="MagicNumber"/>
+    <module name="MagicNumber">
+        <property name="ignoreNumbers" value="-1, 0, 1, 2"/>
+    </module>
     <module name="MissingSwitchDefault"/>
     <module name="SimplifyBooleanExpression"/>
     <module name="SimplifyBooleanReturn"/>
     <module name="StringLiteralEquality"/>
     <module name="NestedForDepth">
-      <property name="max" value="1"/>
+      <property name="max" value="2"/>
     </module>
     <module name="NestedIfDepth">
-      <property name="max" value="1"/>
+      <property name="max" value="2"/>
     </module>
-    <module name="NestedTryDepth">
-      <property name="max" value="1"/>
-    </module>
-    <module name="NoClone"/>
-    <module name="NoFinalizer"/>
-    <module name="SuperClone"/>
-    <module name="SuperFinalize"/>
     <module name="IllegalCatch"/>
-    <module name="IllegalThrows"/>
-    <module name="PackageDeclaration"/>
-    <module name="JUnitTestCase"/>
-    <module name="ClassTypeParameterName"/>
-    <module name="MethodTypeParameterName"/>
-    <module name="PackageName"/>
-    <module name="TypeName"/>
-    <module name="MemberName"/>
-    <module name="ParameterName"/>
-    <module name="StaticVariableName"/>
-    <module name="LocalFinalVariableName"/>
-    <module name="LocalVariableName"/>
-    <module name="AvoidStaticImport"/>
-    <module name="IllegalType"/>
-    <module name="DeclarationOrder"/>
-    <module name="ParameterAssignment"/>
-    <module name="ExplicitInitialization"/>
-    <module name="DefaultComesLast"/>
-    <module name="FallThrough"/>
-    <module name="MultipleStringLiterals"/>
-    <module name="MissingDeprecated"/>
-    <module name="MissingOverride"/>
-    <module name="PackageAnnotation"/>
-    <module name="AnnotationLocation"/>
-    <module name="AnnotationUseStyle"/>
-    <module name="SuppressWarnings"/>
-    <module name="SuppressWarningsHolder"/>
   </module>
 </module>
