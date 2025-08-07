@@ -46,3 +46,4 @@ jobs:
           directory: 'build/docs/javadoc'
           # The GitHub token is automatically provided by Actions
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          project: 'gradle'
