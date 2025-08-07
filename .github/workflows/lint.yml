@@ -67,7 +67,7 @@ jobs:
         run: ./gradlew spotbugsMain
 
       - name: Upload SpotBugs report
-        uses: spotbugs/spotbugs-github-action@v5
+        uses: jmservera/spotbugs-github-action@v0.2.0-alpha
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           report_path: 'build/reports/spotbugs/main.xml'
