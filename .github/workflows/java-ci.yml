@@ -6,13 +6,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
-permissions:
-  contents: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -26,36 +22,22 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
 
-    - name: Run Checkstyle and Generate Javadocs
-      run: ./gradlew check javadoc
+    - name: Run checks
+      run: ./gradlew check
       # The 'check' task runs tests and then checkstyle.
-      # It will fail if there are any linting errors.
-      # The 'javadoc' task generates Javadocs. It will fail if there are Javadoc errors.
 
-  deploy-javadoc:
+  publish-javadoc:
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - name: Deploy JavaDoc
+        uses: MathieuSoysal/Javadoc-publisher.yml@v3.0.2
         with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-
-      - name: Generate Javadocs
-        run: ./gradlew javadoc
-
-      - name: Deploy Javadoc to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/docs/javadoc
-          destination_dir: javadoc
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          javadoc-branch: gh-pages
+          target-folder: javadoc
+          project: gradle
