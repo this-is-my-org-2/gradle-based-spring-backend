@@ -38,7 +38,7 @@ checkstyle {
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
 
-spotbugs {
+tasks.named('spotbugsMain') {
     reports {
         html.required = true
     }
