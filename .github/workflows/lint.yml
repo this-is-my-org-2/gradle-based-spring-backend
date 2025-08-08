@@ -7,73 +7,13 @@ on:
     branches: [ "main" ]
 
 jobs:
-  checkstyle:
-    name: Run Checkstyle
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-
-      - name: Run Checkstyle
-        uses: dbelyaev/action-checkstyle@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          checkstyle_config: 'config/checkstyle/checkstyle.xml'
-          checkstyle_version: '10.17.0'
-          reporter: 'github-pr-review'
-          level: 'warning'
-          workdir: '.'
-          pattern: 'build/reports/checkstyle/*.xml'
-
-  pmd:
-    name: PMD Code Analysis
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Run PMD
-        uses: pmd/pmd-github-action@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # The ruleset file can be customized in the repository
-          rulesets: 'rulesets/java/quickstart.xml'
-          # The action will automatically upload results to GitHub Code Scanning
-
-  spotbugs:
-    name: SpotBugs Analysis
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-      
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-
-      - name: Run SpotBugs
-        run: ./gradlew spotbugsMain
-
-      - name: Deploy SpotBugs Report to GitHub Pages
-        if: github.event_name == 'push'
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/reports/spotbugs
-          destination_dir: spotbugs
+  call-reusable-linting:
+    # In a real-world scenario, this would be:
+    # uses: this-is-my-org-2/.github/.github/workflows/java-linting-reusable.yml@main
+    uses: ./.github/workflows/java-linting-reusable.yml
+    with:
+      checkstyle-config: 'config/checkstyle/checkstyle.xml'
+      checkstyle-pattern: 'build/reports/checkstyle/*.xml'
+      pmd-rulesets: 'rulesets/java/quickstart.xml'
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

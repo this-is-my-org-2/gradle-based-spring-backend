@@ -1,0 +1,102 @@
+name: Reusable Java Linters
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: '사용할 JDK 버전'
+        required: false
+        type: string
+        default: '17'
+      checkstyle-config:
+        description: 'Checkstyle 설정 파일 경로'
+        required: false
+        type: string
+        default: 'config/checkstyle/checkstyle.xml'
+      checkstyle-pattern:
+        description: 'Checkstyle 리포트 XML 파일을 찾을 패턴'
+        required: false
+        type: string
+        default: 'build/reports/checkstyle/*.xml'
+      pmd-rulesets:
+        description: 'PMD 룰셋 파일 경로'
+        required: false
+        type: string
+        default: 'rulesets/java/quickstart.xml'
+    secrets:
+      GH_TOKEN:
+        description: 'GitHub Actions를 위한 토큰'
+        required: true
+
+permissions:
+  contents: write # SpotBugs 리포트 배포용
+  pull-requests: write # Checkstyle PR 코멘트용
+  security-events: write # PMD 코드 스캐닝용
+
+jobs:
+  checkstyle:
+    name: Run Checkstyle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ inputs.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Run Checkstyle
+        uses: dbelyaev/action-checkstyle@v1
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          checkstyle_config: ${{ inputs.checkstyle-config }}
+          checkstyle_version: '10.17.0'
+          reporter: 'github-pr-review'
+          level: 'warning'
+          workdir: '.'
+          pattern: ${{ inputs.checkstyle-pattern }}
+
+  pmd:
+    name: PMD Code Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run PMD
+        uses: pmd/pmd-github-action@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          rulesets: ${{ inputs.pmd-rulesets }}
+
+  spotbugs:
+    name: SpotBugs Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ inputs.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: 'temurin'
+      
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Run SpotBugs
+        run: ./gradlew spotbugsMain
+
+      - name: Deploy SpotBugs Report to GitHub Pages
+        if: github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          publish_dir: ./build/reports/spotbugs
+          destination_dir: spotbugs
